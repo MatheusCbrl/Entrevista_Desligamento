@@ -1,0 +1,6 @@
+streamlit
+pandas
+datetime
+matplotlib
+streamlit-authenticator
+bcrypt
