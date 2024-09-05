@@ -21,4 +21,4 @@ To use the App, follow these steps:
 
 ## License
 -------
-The MultiPDF Chat App is released under the [MIT License](https://opensource.org/licenses/MIT).
+released under the [MIT License](https://opensource.org/licenses/MIT).
