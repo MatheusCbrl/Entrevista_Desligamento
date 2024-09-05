@@ -11,7 +11,7 @@ To install the App, please follow these steps:
 -----
 To use the App, follow these steps:
 
-1. Run the `login.py` file using the Streamlit CLI. Execute the following command:
+1. Run the `app.py` file using the Streamlit CLI. Execute the following command:
    ```
    streamlit run login.py
    ```
