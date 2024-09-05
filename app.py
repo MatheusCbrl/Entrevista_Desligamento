@@ -35,14 +35,14 @@ def buscar_dados(natureza=None, tempo_empresa=None, setor=None, genero=None):
 
 # Função para mostrar tela de login
 def mostrar_login():
-    st.sidebar.title("Login")
-    usuario = st.sidebar.text_input("Usuário:")
-    senha = st.sidebar.text_input("Senha:", type="password")
-    if st.sidebar.button("Entrar"):
+    st.title("Login")
+    usuario = st.text_input("Usuário:")
+    senha = st.text_input("Senha:", type="password")
+    if st.button("Entrar"):
         if usuario == USUARIO and senha == SENHA:
             st.session_state.authenticated = True
         else:
-            st.sidebar.error("Usuário ou senha incorretos")
+            st.error("Usuário ou senha incorretos")
 
 # Verificar autenticação
 if 'authenticated' not in st.session_state:
