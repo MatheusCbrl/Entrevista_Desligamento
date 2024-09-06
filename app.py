@@ -64,7 +64,7 @@ else:
         genero = st.selectbox("Gênero:", ["Masculino", "Feminino", "Outro"])
         idade = st.number_input("Idade:", min_value=18, max_value=100, step=1)
         tempo_empresa = st.text_input("Tempo de empresa:")
-        setor = st.selectbox("Setor:", ["administração","recursos humanos","financeiro","contábil","marketing e vendas","produção","logística","tecnologia da informação","jurídico, pesquisa","compras","suprimentos","atendimento ao cliente"])
+        setor = st.selectbox("Setor:", ["administração","recursos humanos","financeiro","contábil","marketing e vendas","produção","logística","tecnologia da informação","jurídico, pesquisa","compras","suprimentos","atendimento ao cliente","Usinagem"])
         
         cargo = st.text_input("Cargo:")
         data = st.date_input("Data de Desligamento:", format="DD/MM/YYYY")
@@ -177,7 +177,7 @@ else:
         # Filtros
         filtro_natureza = st.selectbox("Filtrar por Natureza do Desligamento:", [""] + ["Exoneração", "Aposentadoria compulsória", "Demissão", "Término de Contrato", "Aposentadoria voluntária", "Posse em outro cargo inacumulável", "Aposentadoria por invalidez", "Outro"])
         filtro_tempo_empresa = st.text_input("Filtrar por Tempo de Empresa (ex: '3 anos'):")
-        filtro_setor = st.selectbox("Setor da empresa:", ["administração","recursos humanos","financeiro","contábil","marketing e vendas","produção","logística","tecnologia da informação","jurídico, pesquisa","compras","suprimentos","atendimento ao cliente"])
+        filtro_setor = st.selectbox("Setor da empresa:", ["administração","recursos humanos","financeiro","contábil","marketing e vendas","produção","logística","tecnologia da informação","jurídico, pesquisa","compras","suprimentos","atendimento ao cliente","Usinagem"])
         filtro_genero = st.selectbox("Filtrar por Gênero:", ["", "Masculino", "Feminino", "Outro"])
     
         # Botão para aplicar filtros
