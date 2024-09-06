@@ -12,18 +12,6 @@ supabase: Client = create_client(url, key)
 USUARIO = st.secrets["login"]["usuario"]
 SENHA = st.secrets["login"]["senha"]
 
-st.markdown(
-    """
-    <style>
-    .css-1jc7ptx, .e1ewe7hr3, .viewerBadge_container__1QSob,
-    .styles_viewerBadge__1yB5_, .viewerBadge_link__1S137,
-    .viewerBadge_text__1JaDK {
-        display: none;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 # Função para inserir dados no Supabase
 def inserir_dados(dados):
     supabase.table("pesquisa_desligamento").insert(dados).execute()
@@ -54,6 +42,14 @@ def mostrar_login():
             st.session_state.authenticated = True
         else:
             st.error("Usuário ou senha incorretos")
+
+# Add custom CSS to hide the GitHub icon
+hide_github_icon = """
+#GithubIcon {
+  visibility: hidden;
+}
+"""
+st.markdown(hide_github_icon, unsafe_allow_html=True)
 
 # Verificar autenticação
 if 'authenticated' not in st.session_state:
