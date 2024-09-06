@@ -12,6 +12,7 @@ supabase: Client = create_client(url, key)
 USUARIO = st.secrets["login"]["usuario"]
 SENHA = st.secrets["login"]["senha"]
 
+
 # Função para inserir dados no Supabase
 def inserir_dados(dados):
     supabase.table("pesquisa_desligamento").insert(dados).execute()
@@ -43,7 +44,6 @@ def mostrar_login():
         else:
             st.error("Usuário ou senha incorretos")
 
-
 # Verificar autenticação
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
@@ -68,6 +68,9 @@ else:
         
         cargo = st.text_input("Cargo:")
         data = st.date_input("Data de Desligamento:", format="DD/MM/YYYY")
+        
+        # Converta a data para o formato 'YYYY-MM-DD' antes de enviar para o Supabase
+        data_formatada = data.strftime("%Y-%m-%d")
         
         # Natureza do desligamento
         st.subheader("Natureza do Desligamento:")
@@ -129,7 +132,7 @@ else:
                 "tempo_empresa": tempo_empresa,
                 "setor": setor,
                 "cargo": cargo,
-                "data":  data.strftime("%d-%m-%Y"),  # Convertendo a data para string no formato DD-MM-YYYY,
+                "data":  data_formatada,
                 "natureza": natureza,
                 "motivos_desligamento": motivos_desligamento,
                 "q1": q1, 
