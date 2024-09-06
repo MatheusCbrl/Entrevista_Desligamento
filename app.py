@@ -66,7 +66,7 @@ else:
         tempo_empresa = st.text_input("Tempo de empresa:")
         setor = st.selectbox("Setor:", ["administração","recursos humanos","financeiro","contábil","marketing e vendas","produção","logística","tecnologia da informação","jurídico, pesquisa","compras","suprimentos","atendimento ao cliente","Usinagem"])
         
-        cargo = st.text_input("Cargo:")
+        cargo = st.selectbox("Cargo:",["Auxiliar de limpeza ","Auxiliar geral ","Operador de máquinas ","Operador de torno cnc","Operador de torno convencional ","Operador de dobra ","Operador de laser ","Soldadores","Montadores ","Assistente Adm - financeiro Pcp Rh fiscal","Analista Adm - financeiro Pcp Rh fiscal ","Supervisores - qualidade logística Adm produção","Coordenadores - Adm / produção ","Gerente - Adm / produção"])
         data = st.date_input("Data de Desligamento:", format="DD/MM/YYYY")
         
         # Converta a data para o formato 'YYYY-MM-DD' antes de enviar para o Supabase
