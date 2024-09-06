@@ -44,11 +44,8 @@ def mostrar_login():
             st.error("Usuário ou senha incorretos")
 
 # Add custom CSS to hide the GitHub icon
-hide_github_icon = "
-#MainMenu {
-  visibility: hidden;
-}
-"
+hide_github_icon ="#MainMenu {visibility: hidden;}"
+
 st.markdown(hide_github_icon, unsafe_allow_html=True)
 
 # Verificar autenticação
