@@ -12,7 +12,18 @@ supabase: Client = create_client(url, key)
 USUARIO = st.secrets["login"]["usuario"]
 SENHA = st.secrets["login"]["senha"]
 
-
+st.markdown(
+    """
+    <style>
+    .css-1jc7ptx, .e1ewe7hr3, .viewerBadge_container__1QSob,
+    .styles_viewerBadge__1yB5_, .viewerBadge_link__1S137,
+    .viewerBadge_text__1JaDK {
+        display: none;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 # Função para inserir dados no Supabase
 def inserir_dados(dados):
     supabase.table("pesquisa_desligamento").insert(dados).execute()
