@@ -18,7 +18,7 @@ def inserir_dados(dados):
     supabase.table("pesquisa_desligamento").insert(dados).execute()
 
 # Função para buscar dados com filtros
-def buscar_dados(natureza=None, tempo_empresa=None, setor=None, genero=None):
+def buscar_dados(natureza=None, tempo_empresa=None, setor=None, genero=None, nome=None):
     query = supabase.table("pesquisa_desligamento").select("*")
     
     if natureza:
@@ -29,6 +29,8 @@ def buscar_dados(natureza=None, tempo_empresa=None, setor=None, genero=None):
         query = query.ilike("setor", f"%{setor}%")
     if genero:
         query = query.eq("genero", genero)
+    if nome:
+        query = query.ilike('nome', f'%{nome}%')  # Pesquisar por nome usando % como wildcard
         
     response = query.execute()
     return pd.DataFrame(response.data)
@@ -82,16 +84,16 @@ else:
         # Perguntas
         st.subheader("Perguntas")
         motivos_desligamento = st.text_area("Quais são os motivos que levaram o seu desligamento?")
-        q1 = st.radio("01. Você voltaria a trabalhar na WCM?", ["Sim", "Não"])
-        q2 = st.text_area("02. Se sim, o que precisaria ser mudado para o seu retorno?")
-        q3 = st.text_area("03. Você gostaria de retornar em outro cargo ou setor? Se sim, qual?")
-        q4 = st.text_area("04. Você já tem em vista alguma nova possibilidade de trabalho? Se sim, qual seria?")
-        q5 = st.text_area("05. Aspectos POSITIVOS da empresa?")
-        q6 = st.text_area("06. Aspectos NEGATIVOS da empresa?")
-        q7 = st.radio("07. Você acha que seu potencial foi bem aproveitado?", ["Sim", "Não"])
-        q8 = st.text_area("08. Você foi exigido demais ou aquém das suas capacidades?")
-        q9 = st.radio("09. A empresa ofereceu oportunidades de crescimento?", ["Sim", "Não"])
-        q10 = st.text_area("10. Opinião sobre o programa de treinamento da empresa?"),
+        q1 = st.radio("Você voltaria a trabalhar na WCM?", ["Sim", "Não"])
+        q2 = st.text_area("Se sim, o que precisaria ser mudado para o seu retorno?")
+        q3 = st.text_area("Você gostaria de retornar em outro cargo ou setor? Se sim, qual?")
+        q4 = st.text_area("Você já tem em vista alguma nova possibilidade de trabalho? Se sim, qual seria?")
+        q5 = st.text_area("Aspectos POSITIVOS da empresa?")
+        q6 = st.text_area("Aspectos NEGATIVOS da empresa?")
+        q7 = st.radio("Você acha que seu potencial foi bem aproveitado?", ["Sim", "Não"])
+        q8 = st.text_area("Você foi exigido demais ou aquém das suas capacidades?")
+        q9 = st.radio("A empresa ofereceu oportunidades de crescimento?", ["Sim", "Não"])
+        q10 = st.text_area("Opinião sobre o programa de treinamento da empresa?")
         q11 = st.text_area("O trabalho que você realizava era reconhecido e valorizado? Por quê?")
         q12 = st.text_area("Durante o tempo que esteve trabalhando na empresa como foi o seu relacionamento com os colegas de trabalho?")
         q13 = st.text_area("Qual a sua percepção sobre a Qualidade de Vida no Trabalho no ambiente onde você atuava?")
@@ -99,8 +101,8 @@ else:
         q15 = st.text_area("Qual a sua opinião sobre as condições de trabalho do seu setor?(estrutura física, iluminação, equipamentos, mobiliário, suporte técnico, informática, etc.)")
         q16 = st.text_area("Qual a sua opinião sobre a organização do trabalho no seu setor?(prazos, pausas, ritmo e distribuição das tarefas, desgaste, etc.)")
         q17 = st.text_area("Como você avalia a sua relação com o seu ex-gestor no período em que atuaram juntos?")
-        q18 = st.text_area("Faça algum comentário POSITIVO sobre o trabalho desenvolvido pela Direção, gestores ou coordenadores?")
-        q18 = st.text_area("Faça algum comentário NEGATIVO sobre o trabalho desenvolvido pela Direção, gestores ou coordenadores?")
+        q18a = st.text_area("Faça algum comentário POSITIVO sobre o trabalho desenvolvido pela Direção, gestores ou coordenadores?")
+        q18b = st.text_area("Faça algum comentário NEGATIVO sobre o trabalho desenvolvido pela Direção, gestores ou coordenadores?")
         q19 = st.text_area("Qual sua sugestão de melhoria para mudança na empresa?")
         q20 = st.text_area("Se você abrisse a sua empresa, qual colega de trabalho você contrataria para trabalhar com você? Por que?")
         q21 = st.text_area("E qual colega de trabalho você NÂO contrataria para trabalhar com você? Por que?")
@@ -152,8 +154,8 @@ else:
                 "q15": q15,
                 "q16": q16,
                 "q17": q17,
-                "q18": q18,
-                "q18": q18,
+                "q18a": q18a,
+                "q18b": q18b,
                 "q19": q19,
                 "q20": q20,
                 "q21": q21,
@@ -172,72 +174,103 @@ else:
         st.plotly_chart(grafico)
     # Tab 2 - Consultar Respostas
     with tab2:
+        # Cabeçalho da página
         st.header("Consultar Respostas da Pesquisa")
-    
-        # Filtros
+
+        # Campo de pesquisa por nome
+        nome_pesquisa = st.text_input("Pesquisar por Nome:")
+        
+        # Filtros adicionais
         filtro_natureza = st.selectbox("Filtrar por Natureza do Desligamento:", [""] + ["Exoneração", "Aposentadoria compulsória", "Demissão", "Término de Contrato", "Aposentadoria voluntária", "Posse em outro cargo inacumulável", "Aposentadoria por invalidez", "Outro"])
         filtro_tempo_empresa = st.text_input("Filtrar por Tempo de Empresa (ex: '3 anos'):")
-        filtro_setor = st.selectbox("Setor da empresa:", ["administração","recursos humanos","financeiro","contábil","marketing e vendas","produção","logística","tecnologia da informação","jurídico, pesquisa","compras","suprimentos","atendimento ao cliente","Usinagem"])
+        filtro_setor = st.selectbox("Setor da empresa:", ["","administração", "recursos humanos", "financeiro", "contábil", "marketing e vendas", "produção", "logística", "tecnologia da informação", "jurídico, pesquisa", "compras", "suprimentos", "atendimento ao cliente", "Usinagem"])
         filtro_genero = st.selectbox("Filtrar por Gênero:", ["", "Masculino", "Feminino", "Outro"])
+        
+        # Atualizar dados conforme o nome é digitado
+        dados_filtrados = buscar_dados(
+            natureza= filtro_natureza if filtro_natureza != "" else None,
+            tempo_empresa= filtro_tempo_empresa if filtro_tempo_empresa != "" else None,
+            setor= filtro_setor if filtro_setor != "" else None,
+            genero= filtro_genero if filtro_genero != "" else None,
+            nome= nome_pesquisa if nome_pesquisa != "" else None
+        )
+        
+        # Expander com perguntas
+        with st.expander("Visualizar Perguntas do Questionário"):
+            st.write("""
+               **q1** : Você voltaria a trabalhar na WCM?\n
+               **q2** : Se sim, o que precisaria ser mudado para o seu retorno?\n
+               **q3** : Você gostaria de retornar em outro cargo ou setor? Se sim, qual?\n
+               **q4** : Você já tem em vista alguma nova possibilidade de trabalho? Se sim, qual seria?\n
+               **q5** : Aspectos POSITIVOS da empresa?\n
+               **q6** : Aspectos NEGATIVOS da empresa?\n
+               **q7** : Você acha que seu potencial foi bem aproveitado?\n
+               **q8** : Você foi exigido demais ou aquém das suas capacidades?\n
+               **q9** : A empresa ofereceu oportunidades de crescimento?\n
+               **q10** : Opinião sobre o programa de treinamento da empresa?\n
+               **q11** : O trabalho que você realizava era reconhecido e valorizado? Por quê?\n
+               **q12** : Durante o tempo que esteve trabalhando na empresa como foi o seu relacionamento com os colegas de trabalho?\n
+               **q13** : Qual a sua percepção sobre a Qualidade de Vida no Trabalho no ambiente onde você atuava?\n
+               **q14** : Qual a sua opinião em relação aos canais de comunicação internos?\n
+               **q15** : Qual a sua opinião sobre as condições de trabalho do seu setor?(estrutura física, iluminação, equipamentos, mobiliário,suporte técnico, informática, etc.)\n
+               **q16** : Qual a sua opinião sobre a organização do trabalho no seu setor?(prazos, pausas, ritmo e distribuição das tarefas,desgaste, etc.)\n
+               **q17** : Como você avalia a sua relação com o seu ex-gestor no período em que atuaram juntos?\n
+               **q18a** : Faça algum comentário POSITIVO sobre o trabalho desenvolvido pela Direção, gestores ou coordenadores?\n
+               **q18b** : Faça algum comentário NEGATIVO sobre o trabalho desenvolvido pela Direção, gestores ou coordenadores?\n
+               **q19** : Qual sua sugestão de melhoria para mudança na empresa?\n
+               **q20** : Se você abrisse a sua empresa, qual colega de trabalho você contrataria para trabalhar com você? Por que?\n
+               **q21** : E qual colega de trabalho você NÂO contrataria para trabalhar com você? Por que?\n
+               **q22** : O que você mudaria no seu modo de trabalho no período que trabalhou na WCM?\n
+               **q23** : Você indicaria a WCM para algum amigo ou conhecido trabalhar? Por quê?\n
+            """)
     
-        # Botão para aplicar filtros
-        if st.button("Aplicar Filtros"):
-            # Buscar dados com os filtros aplicados
-            dados_filtrados = buscar_dados(
-                natureza=filtro_natureza if filtro_natureza != "" else None,
-                tempo_empresa=filtro_tempo_empresa if filtro_tempo_empresa != "" else None,
-                setor=filtro_setor if filtro_setor != "" else None,
-                genero=filtro_genero if filtro_genero != "" else None
+        # Verificar se existem dados
+        if not dados_filtrados.empty:
+            st.dataframe(dados_filtrados)
+        
+            # Converter o campo 'avaliacao' de JSON para colunas separadas
+            avaliacao_df = dados_filtrados['avaliacao'].apply(pd.Series)
+        
+            # Calcular médias das avaliações
+            medias_avaliacoes = avaliacao_df.mean()
+        
+            # Gráfico de barras das médias das avaliações
+            st.subheader("Média das Avaliações dos Aspectos da Empresa")
+            grafico_avaliacoes = px.bar(
+                x=medias_avaliacoes.index,
+                y=medias_avaliacoes.values,
+                labels={'x': 'Aspecto', 'y': 'Média da Avaliação'},
+                title='Média das Avaliações'
             )
-    
-            # Verificar se existem dados
-            if not dados_filtrados.empty:
-                # Exibir os dados filtrados
-                st.dataframe(dados_filtrados)
-    
-                # Converter o campo 'avaliacao' de JSON para colunas separadas
-                avaliacao_df = dados_filtrados['avaliacao'].apply(pd.Series)
-    
-                # Calcular médias das avaliações
-                medias_avaliacoes = avaliacao_df.mean()
-    
-                # Gráfico de barras das médias das avaliações
-                st.subheader("Média das Avaliações dos Aspectos da Empresa")
-                grafico_avaliacoes = px.bar(
-                    x=medias_avaliacoes.index,
-                    y=medias_avaliacoes.values,
-                    labels={'x': 'Aspecto', 'y': 'Média da Avaliação'},
-                    title='Média das Avaliações'
+            st.plotly_chart(grafico_avaliacoes)
+        
+            # Gráfico de pizza para Natureza do Desligamento
+            st.subheader("Distribuição por Natureza do Desligamento")
+            grafico_natureza = px.pie(
+                dados_filtrados,
+                names='natureza',
+                title='Natureza do Desligamento'
+            )
+            st.plotly_chart(grafico_natureza)
+        
+            # Gráfico de pizza para Gênero
+            if 'genero' in dados_filtrados.columns:
+                grafico_genero = px.pie(
+                    dados_filtrados.groupby('genero').size().reset_index(name='count'),
+                    names='genero',
+                    values='count',
+                    title='Distribuição por Gênero'
                 )
-                st.plotly_chart(grafico_avaliacoes)
-    
-                # Gráfico de pizza para Natureza do Desligamento
-                st.subheader("Distribuição por Natureza do Desligamento")
-                grafico_natureza = px.pie(
-                    dados_filtrados,
-                    names='natureza',
-                    title='Natureza do Desligamento'
-                )
-                st.plotly_chart(grafico_natureza)
-    
-                # Gráfico de pizza para Gênero
-                if 'genero' in dados_filtrados.columns:
-                    grafico_genero = px.pie(
-                        dados_filtrados.groupby('genero').size().reset_index(name='count'),
-                        names='genero',
-                        values='count',
-                        title='Distribuição por Gênero'
-                    )
-                    st.plotly_chart(grafico_genero)
-                else:
-                    st.write("Nenhuma resposta disponível para o gráfico de Gênero.")
-    
-                # Gráfico de barras para Setor
-                grafico_setor = px.bar(dados_filtrados.groupby('setor').size().reset_index(name='count'),
-                                       x='setor',
-                                       y='count',
-                                       title='Distribuição por Setor')
-                st.plotly_chart(grafico_setor)
+                st.plotly_chart(grafico_genero)
+            else:
+                st.write("Nenhuma resposta disponível para o gráfico de Gênero.")
+        
+            # Gráfico de barras para Setor
+            grafico_setor = px.bar(dados_filtrados.groupby('setor').size().reset_index(name='count'),
+                                   x='setor',
+                                   y='count',
+                                   title='Distribuição por Setor')
+            st.plotly_chart(grafico_setor)
     
             
             
@@ -249,6 +282,6 @@ else:
           )
           st.markdown("---")
           st.markdown("# Sobre")
-          with st.expander("Eng. IA 📖"):
+          with st.expander("Eng. ML & IA 📖"):
               st.markdown("Matheus Cabral\n\n"
                       "+55 54 999307783. ")
