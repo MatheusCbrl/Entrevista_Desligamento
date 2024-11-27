@@ -233,6 +233,54 @@ else:
         
             # Calcular médias das avaliações
             medias_avaliacoes = avaliacao_df.mean()
+            if nome_pesquisa:
+                # Buscar dados filtrados pelo nome
+                dados_filtrados = buscar_dados(nome=nome_pesquisa)
+            
+                if not dados_filtrados.empty:
+                    # Exibir as respostas em formato de pergunta e resposta
+                    st.subheader(f"Respostas de {nome_pesquisa}")
+                    
+                    # Extrair as respostas da primeira linha (supondo que o filtro retorna um único registro)
+                    respostas = dados_filtrados.iloc[0]
+                    
+                    # Loop para percorrer todas as perguntas e respostas
+                    perguntas = [
+                        "Você voltaria a trabalhar na WCM?",
+                        "Se sim, o que precisaria ser mudado para o seu retorno?",
+                        "Você gostaria de retornar em outro cargo ou setor? Se sim, qual?",
+                        "Você já tem em vista alguma nova possibilidade de trabalho? Se sim, qual seria?",
+                        "Aspectos POSITIVOS da empresa?",
+                        "Aspectos NEGATIVOS da empresa?",
+                        "Você acha que seu potencial foi bem aproveitado?",
+                        "Você foi exigido demais ou aquém das suas capacidades?",
+                        "A empresa ofereceu oportunidades de crescimento?",
+                        "Opinião sobre o programa de treinamento da empresa?",
+                        "O trabalho que você realizava era reconhecido e valorizado? Por quê?",
+                        "Como foi seu relacionamento com os colegas de trabalho?",
+                        "Percepção sobre a Qualidade de Vida no Trabalho?",
+                        "Opinião sobre os canais de comunicação internos?",
+                        "Condições de trabalho do seu setor?",
+                        "Organização do trabalho no setor?",
+                        "Relação com o ex-gestor?",
+                        "Comentário POSITIVO sobre Direção/gestores?",
+                        "Comentário NEGATIVO sobre Direção/gestores?",
+                        "Sugestão de melhoria para a empresa?",
+                        "Qual colega de trabalho você contrataria? Por quê?",
+                        "Qual colega de trabalho você NÃO contrataria? Por quê?",
+                        "O que você mudaria no seu modo de trabalho?",
+                        "Você indicaria a WCM para amigos? Por quê?"
+                    ]
+            
+                    # Exibir cada pergunta e resposta
+                    for idx, pergunta in enumerate(perguntas, start=1):
+                        st.markdown(f"**{pergunta}**")
+                        st.write(respostas[f"q{idx}"] if f"q{idx}" in respostas else "Resposta não disponível")
+                        st.markdown("---")
+                else:
+                    st.write("Nenhuma resposta encontrada para o nome informado.")
+            else:
+                st.write("Digite um nome para buscar as respostas.")
         
             # Gráfico de barras das médias das avaliações
             st.subheader("Média das Avaliações dos Aspectos da Empresa")
