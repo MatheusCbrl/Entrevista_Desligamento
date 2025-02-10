@@ -226,7 +226,7 @@ else:
     
         # Verificar se existem dados
         if not dados_filtrados.empty:
-            st.dataframe(dados_filtrados)
+            st.dataframe(dados_filtrados[['nome']])
         
             # Converter o campo 'avaliacao' de JSON para colunas separadas
             avaliacao_df = dados_filtrados['avaliacao'].apply(pd.Series)
