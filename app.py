@@ -240,43 +240,44 @@ else:
                 if not dados_filtrados.empty:
                     # Exibir as respostas em formato de pergunta e resposta
                     st.subheader(f"Respostas de {nome_pesquisa}")
-                    
-                    # Extrair as respostas da primeira linha (supondo que o filtro retorna um único registro)
-                    respostas = dados_filtrados.iloc[0]
-                    
-                    # Loop para percorrer todas as perguntas e respostas
-                    perguntas = [
-                        "Você voltaria a trabalhar na WCM?",
-                        "Se sim, o que precisaria ser mudado para o seu retorno?",
-                        "Você gostaria de retornar em outro cargo ou setor? Se sim, qual?",
-                        "Você já tem em vista alguma nova possibilidade de trabalho? Se sim, qual seria?",
-                        "Aspectos POSITIVOS da empresa?",
-                        "Aspectos NEGATIVOS da empresa?",
-                        "Você acha que seu potencial foi bem aproveitado?",
-                        "Você foi exigido demais ou aquém das suas capacidades?",
-                        "A empresa ofereceu oportunidades de crescimento?",
-                        "Opinião sobre o programa de treinamento da empresa?",
-                        "O trabalho que você realizava era reconhecido e valorizado? Por quê?",
-                        "Como foi seu relacionamento com os colegas de trabalho?",
-                        "Percepção sobre a Qualidade de Vida no Trabalho?",
-                        "Opinião sobre os canais de comunicação internos?",
-                        "Condições de trabalho do seu setor?",
-                        "Organização do trabalho no setor?",
-                        "Relação com o ex-gestor?",
-                        "Comentário POSITIVO sobre Direção/gestores?",
-                        "Comentário NEGATIVO sobre Direção/gestores?",
-                        "Sugestão de melhoria para a empresa?",
-                        "Qual colega de trabalho você contrataria? Por quê?",
-                        "Qual colega de trabalho você NÃO contrataria? Por quê?",
-                        "O que você mudaria no seu modo de trabalho?",
-                        "Você indicaria a WCM para amigos? Por quê?"
-                    ]
             
-                    # Exibir cada pergunta e resposta
-                    for idx, pergunta in enumerate(perguntas, start=1):
-                        st.markdown(f"**{pergunta}**")
-                        st.write(respostas[f"q{idx}"] if f"q{idx}" in respostas else "Resposta não disponível")
-                        st.markdown("---")
+                    # Extrair as respostas da primeira linha
+                    respostas = dados_filtrados.iloc[0]
+            
+                    # Dicionário de perguntas mapeadas corretamente com seus respectivos identificadores no banco
+                    perguntas_dict = {
+                        "q1": "Q1. Você voltaria a trabalhar na WCM?",
+                        "q2": "Q2. Se sim, o que precisaria ser mudado para o seu retorno?",
+                        "q3": "Q3. Você gostaria de retornar em outro cargo ou setor? Se sim, qual?",
+                        "q4": "Q4. Você já tem em vista alguma nova possibilidade de trabalho? Se sim, qual seria?",
+                        "q5": "Q5. Aspectos POSITIVOS da empresa?",
+                        "q6": "Q6. Aspectos NEGATIVOS da empresa?",
+                        "q7": "Q7. Você acha que seu potencial foi bem aproveitado?",
+                        "q8": "Q8. Você foi exigido demais ou aquém das suas capacidades?",
+                        "q9": "Q9. A empresa ofereceu oportunidades de crescimento?",
+                        "q10": "Q10. Opinião sobre o programa de treinamento da empresa?",
+                        "q11": "Q11. O trabalho que você realizava era reconhecido e valorizado? Por quê?",
+                        "q12": "Q12. Durante o tempo que esteve trabalhando na empresa como foi o seu relacionamento com os colegas de trabalho?",
+                        "q13": "Q13. Qual a sua percepção sobre a Qualidade de Vida no Trabalho no ambiente onde você atuava?",
+                        "q14": "Q14. Qual a sua opinião em relação aos canais de comunicação internos?",
+                        "q15": "Q15. Qual a sua opinião sobre as condições de trabalho do seu setor?",
+                        "q16": "Q16. Qual a sua opinião sobre a organização do trabalho no seu setor?",
+                        "q17": "Q17. Como você avalia a sua relação com o seu ex-gestor no período em que atuaram juntos?",
+                        "q18a": "Q18a. Faça algum comentário POSITIVO sobre o trabalho desenvolvido pela Direção, gestores ou coordenadores?",
+                        "q18b": "Q18b. Faça algum comentário NEGATIVO sobre o trabalho desenvolvido pela Direção, gestores ou coordenadores?",
+                        "q19": "Q19. Qual sua sugestão de melhoria para mudança na empresa?",
+                        "q20": "Q20. Se você abrisse a sua empresa, qual colega de trabalho você contrataria para trabalhar com você? Por que?",
+                        "q21": "Q21. E qual colega de trabalho você NÂO contrataria para trabalhar com você? Por que?",
+                        "q22": "Q22. O que você mudaria no seu modo de trabalho no período que trabalhou na WCM?",
+                        "q23": "Q23. Você indicaria a WCM para algum amigo ou conhecido trabalhar? Por quê?"
+                    }
+            
+                    # Exibir cada pergunta e sua resposta correspondente
+                    for chave, pergunta in perguntas_dict.items():
+                        if chave in respostas:
+                            st.markdown(f"**{pergunta}**")
+                            st.write(respostas[chave] if pd.notna(respostas[chave]) else "Resposta não disponível")
+                            st.markdown("---")
                 else:
                     st.write("Nenhuma resposta encontrada para o nome informado.")
             else:
