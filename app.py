@@ -12,6 +12,11 @@ supabase: Client = create_client(url, key)
 USUARIO = st.secrets["login"]["usuario"]
 SENHA = st.secrets["login"]["senha"]
 
+# Função para buscar todos os nomes únicos da tabela
+def get_nomes_unicos():
+    response = supabase.table("pesquisa_desligamento").select("nome").execute()
+    nomes = [""] + [row["nome"] for row in response.data]
+    return nomes
 
 # Função para inserir dados no Supabase
 def inserir_dados(dados):
@@ -178,7 +183,11 @@ else:
         st.header("Consultar Respostas da Pesquisa")
 
         # Campo de pesquisa por nome
-        nome_pesquisa = st.text_input("Pesquisar por Nome:")
+        #nome_pesquisa = st.text_input("Pesquisar por Nome:")
+        # Campo de seleção de nome
+        nome_pesquisa = st.selectbox("Selecione um nome:", get_nomes_unicos())
+        # Atualizar dados filtrados com o nome selecionado
+        #dados_filtrados = buscar_dados(nome=nome_selecionado)
         
         # Filtros adicionais
         filtro_natureza = st.selectbox("Filtrar por Natureza do Desligamento:", [""] + ["Exoneração", "Aposentadoria compulsória", "Demissão", "Término de Contrato", "Aposentadoria voluntária", "Posse em outro cargo inacumulável", "Aposentadoria por invalidez", "Outro"])
@@ -186,14 +195,27 @@ else:
         filtro_setor = st.selectbox("Setor da empresa:", ["","administração", "recursos humanos", "financeiro", "contábil", "marketing e vendas", "produção", "logística", "tecnologia da informação", "jurídico, pesquisa", "compras", "suprimentos", "atendimento ao cliente", "Usinagem"])
         filtro_genero = st.selectbox("Filtrar por Gênero:", ["", "Masculino", "Feminino", "Outro"])
         
-        # Atualizar dados conforme o nome é digitado
-        dados_filtrados = buscar_dados(
-            natureza= filtro_natureza if filtro_natureza != "" else None,
-            tempo_empresa= filtro_tempo_empresa if filtro_tempo_empresa != "" else None,
-            setor= filtro_setor if filtro_setor != "" else None,
-            genero= filtro_genero if filtro_genero != "" else None,
-            nome= nome_pesquisa if nome_pesquisa != "" else None
-        )
+        
+        # Atualizar dados filtrados com o nome selecionado
+        if nome_pesquisa == "":
+            dados_filtrados = buscar_dados(
+                natureza= filtro_natureza if filtro_natureza != "" else None,
+                tempo_empresa= filtro_tempo_empresa if filtro_tempo_empresa != "" else None,
+                setor= filtro_setor if filtro_setor != "" else None,
+                genero= filtro_genero if filtro_genero != "" else None
+                #nome= nome_pesquisa if nome_pesquisa != "" else None
+            )
+        else:
+            # Atualizar dados conforme o nome é digitado
+            dados_filtrados = buscar_dados(
+                natureza= filtro_natureza if filtro_natureza != "" else None,
+                tempo_empresa= filtro_tempo_empresa if filtro_tempo_empresa != "" else None,
+                setor= filtro_setor if filtro_setor != "" else None,
+                genero= filtro_genero if filtro_genero != "" else None,
+                nome=nome_pesquisa
+                #nome= nome_pesquisa if nome_pesquisa != "" else None
+            )
+        
         
         # Expander com perguntas
         with st.expander("Visualizar Perguntas do Questionário"):
@@ -226,8 +248,8 @@ else:
     
         # Verificar se existem dados
         if not dados_filtrados.empty:
-            st.dataframe(dados_filtrados[['nome']])
-        
+            #st.dataframe(dados_filtrados[['nome']])
+            
             # Converter o campo 'avaliacao' de JSON para colunas separadas
             avaliacao_df = dados_filtrados['avaliacao'].apply(pd.Series)
         
