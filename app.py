@@ -71,7 +71,7 @@ else:
         genero = st.selectbox("Gênero:", ["Masculino", "Feminino", "Outro"])
         idade = st.number_input("Idade:", min_value=18, max_value=100, step=1)
         tempo_empresa = st.text_input("Tempo de empresa:")
-        setor = st.selectbox("Setor:", ["administração","recursos humanos","financeiro","contábil","marketing e vendas","produção","logística","tecnologia da informação","jurídico, pesquisa","compras","suprimentos","atendimento ao cliente","Usinagem","PCP"])
+        setor = st.selectbox("Setor:", ["administração","recursos humanos","financeiro","contábil","marketing e vendas","produção","logística","tecnologia da informação","jurídico, pesquisa","compras","suprimentos","Solda","atendimento ao cliente","Usinagem","PCP"])
         
         cargo = st.selectbox("Cargo:",["Auxiliar de limpeza ","Auxiliar geral ","Operador de máquinas ","Operador de torno cnc","Operador de torno convencional ","Operador de dobra ","Operador de laser ","Soldadores","Montadores ","Assistente Adm - financeiro Pcp Rh fiscal","Analista Adm - financeiro Pcp Rh fiscal ","Supervisores - qualidade logística Adm produção","Coordenadores - Adm / produção ","Gerente - Adm / produção","Assistente de PCP"])
         data = st.date_input("Data de Desligamento:", format="DD/MM/YYYY")
